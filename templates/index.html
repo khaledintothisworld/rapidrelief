@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RapidRelief - Emergency Relief Matcher</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>RapidRelief <span>Emergency Relief Matcher</span></h1>
+  <nav id="tabs">
+    <button data-tab="dashboard" class="on">Dashboard</button>
+    <button data-tab="inventory">Inventory</button>
+    <button data-tab="shelters">Shelters</button>
+    <button data-tab="log">Allocation log</button>
+    <button data-tab="reports">Reports</button>
+  </nav>
+  <div class="actions">
+    <button class="primary" id="btn-allocate">Run allocation</button>
+    <button id="btn-reset">Reset sample data</button>
+  </div>
+</header>
+<div id="msg" role="status" aria-live="polite"></div>
+<main>
+  <section id="kpis"></section>
+
+  <section id="tab-dashboard" class="tab">
+    <div class="grid2">
+      <div class="panel"><h2>Request queue (highest priority first)</h2><div class="scroll"><table id="t-queue"></table></div></div>
+      <div class="panel"><h2>New supply request</h2>
+        <form id="f-request">
+          <label>Shelter<select name="shelter_id" id="sel-shelter"></select></label>
+          <label>Item<input name="item" list="items" required placeholder="e.g. Water (L)"></label>
+          <datalist id="items"></datalist>
+          <label>Quantity<input name="quantity" type="number" min="1" required></label>
+          <label>Urgency<select name="urgency"><option>Critical</option><option selected>High</option><option>Moderate</option></select></label>
+          <button class="primary">Submit request</button>
+        </form>
+      </div>
+    </div>
+    <div class="panel"><h2>All requests</h2><div class="scroll"><table id="t-requests"></table></div></div>
+  </section>
+
+  <section id="tab-inventory" class="tab" hidden>
+    <div class="grid2">
+      <div class="panel"><h2>Current inventory</h2><div class="scroll"><table id="t-inventory"></table></div></div>
+      <div class="panel"><h2>Adjust stock</h2>
+        <form id="f-stock">
+          <label>Warehouse<select name="warehouse_id" id="sel-wh"></select></label>
+          <label>Item<input name="item" list="items" required></label>
+          <label>Quantity<input name="quantity" type="number" min="1" required></label>
+          <label>Action<select name="action"><option value="add">Add stock</option><option value="remove">Remove stock</option></select></label>
+          <button class="primary">Update inventory</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-shelters" class="tab" hidden>
+    <div class="grid2">
+      <div class="panel"><h2>Registered shelters</h2><div class="scroll"><table id="t-shelters"></table></div></div>
+      <div class="panel"><h2>Register shelter</h2>
+        <form id="f-shelter">
+          <label>Shelter ID<input name="shelter_id" required placeholder="SH-105"></label>
+          <label>Name<input name="name" required></label>
+          <label>Priority (1 low - 5 high)<input name="priority" type="number" min="1" max="5" value="3" required></label>
+          <label>Location X<input name="x" type="number" step="any" required></label>
+          <label>Location Y<input name="y" type="number" step="any" required></label>
+          <button class="primary">Register shelter</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-log" class="tab" hidden>
+    <div class="panel"><h2>Allocation log</h2><div class="scroll"><table id="t-log"></table></div></div>
+  </section>
+
+  <section id="tab-reports" class="tab" hidden>
+    <div class="panel"><h2>Export report</h2>
+      <p>Lists fulfilled and unfulfilled shelter requests with delivery totals.</p>
+      <p><a class="btn" href="/api/export/report.json">Download JSON</a> <a class="btn" href="/api/export/report.csv">Download CSV</a></p>
+    </div>
+    <div class="panel"><h2>Unfulfilled requests</h2><div class="scroll"><table id="t-unfulfilled"></table></div></div>
+  </section>
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
